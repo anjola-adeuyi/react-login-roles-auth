@@ -40,9 +40,13 @@ const Register = () => {
       return;
     }
     try {
-      const res = await axios.post(REGISTER_URL, 
+      const res = await axios.post(
+        REGISTER_URL,
         JSON.stringify({ user, pwd }),
-        { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        }
       );
 
       console.log(res.data);
@@ -60,10 +64,9 @@ const Register = () => {
         setErrMsg('User Already Exists');
       } else {
         setErrMsg('Registration Failed');
-      }  
+      }
       errRef.current.focus();
-    } 
-    };
+    }
   };
 
   useEffect(() => {
