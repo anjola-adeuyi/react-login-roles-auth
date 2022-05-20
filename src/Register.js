@@ -5,6 +5,7 @@ import {
   faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from './api/axios';
 
 const USER_REGEX = /^[a-zA-Z0-9]{3,23}$/;
 const PWD_REG = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -35,9 +36,34 @@ const Register = () => {
     const v1 = USER_REGEX.test(user);
     const v2 = PWD_REG.test(pwd);
     if (!v1 || !v2) {
-      setErrMsg('Invalid username or password');
+      setErrMsg('Invalid Entry');
       return;
     }
+    try {
+      const res = await axios.post(REGISTER_URL, 
+        JSON.stringify({ user, pwd }),
+        { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
+      );
+
+      console.log(res.data);
+      console.log(JSON.stringify(res.data));
+      setSuccess(true);
+
+      if (res.status === 200) {
+        setSuccess(true);
+        setErrMsg('');
+      }
+    } catch (err) {
+      if (!err.response) {
+        setErrMsg('Network Error or No Server Response');
+      } else if (err.response.status === 401) {
+        setErrMsg('User Already Exists');
+      } else {
+        setErrMsg('Registration Failed');
+      }  
+      errRef.current.focus();
+    } 
+    };
   };
 
   useEffect(() => {
